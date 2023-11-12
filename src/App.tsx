@@ -1,6 +1,9 @@
 import { Box, Container } from '@mui/system';
 import Header from './components/Header';
 import { grey } from '@mui/material/colors';
+import Board from './components/Board';
+import ControlPanel from './components/ControlPanel';
+import Stats from './components/Stats';
 
 function App() {
   return (
@@ -11,7 +14,15 @@ function App() {
       }}
     >
       <Header />
-      <Container maxWidth={'lg'}></Container>
+      <Container
+        sx={{
+          maxWidth: '950px !important',
+        }}
+      >
+        <ControlPanel />
+        <Stats />
+        <Board />
+      </Container>
     </Box>
   );
 }

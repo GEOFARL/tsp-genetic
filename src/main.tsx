@@ -9,8 +9,14 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { ThemeProvider } from '@mui/system';
 import { createTheme, responsiveFontSizes } from '@mui/material/styles';
+import { teal, yellow } from '@mui/material/colors';
 
-let theme = createTheme();
+let theme = createTheme({
+  palette: {
+    primary: teal,
+    secondary: yellow,
+  },
+});
 theme = responsiveFontSizes(theme);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

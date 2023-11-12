@@ -9,7 +9,7 @@ const Header = () => {
         backgroundColor: teal['600'],
         color: grey['200'],
         py: {
-          xs: '.4rem',
+          xs: '1rem',
         },
       }}
     >
