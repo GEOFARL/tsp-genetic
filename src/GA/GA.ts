@@ -11,6 +11,8 @@ export default class GA {
   private points: IPoint[];
   private distances: number[][] = [];
   private population: number[][] = [];
+  private populationEvaluation: number[] = [];
+  private bestPopulation: { value: number; population: number[] } | null = null;
 
   private readonly CROSSOVER_TYPE: Crossover;
   private readonly MUTATION_TYPE: Mutation;
@@ -42,9 +44,12 @@ export default class GA {
 
     this.computeDistances();
     this.generatePopulation();
+    this.findBestPopulation();
   }
 
-  public getRoute(): number[] {}
+  public getRoute(): number[] {
+    return this.bestPopulation!.population!;
+  }
 
   private getNextGeneration() {}
 
@@ -75,5 +80,50 @@ export default class GA {
     const array = Array.from({ length: this.points.length }, (_, i) => i);
     shuffle(array);
     return array;
+  }
+
+  private findBestPopulation() {
+    for (let i = 0; i < this.population.length; i += 1) {
+      this.populationEvaluation.push(this.evaluate(this.population[i]));
+    }
+
+    const currentBestPopulation = this.getBestPopulation();
+
+    if (
+      this.bestPopulation === null ||
+      this.bestPopulation.value < currentBestPopulation.bestValue
+    ) {
+      this.bestPopulation = {
+        population: this.population[currentBestPopulation.index].slice(),
+        value: currentBestPopulation.bestValue,
+      };
+    }
+  }
+
+  private evaluate(variant: number[]) {
+    let sum = this.distances[variant[0]][variant[variant.length - 1]];
+
+    for (let i = 1; i < variant.length; i += 1) {
+      sum += this.distances[variant[i]][variant[i - 1]];
+    }
+
+    return sum;
+  }
+
+  private getBestPopulation() {
+    let index = 0;
+    let bestValue = this.populationEvaluation[0];
+
+    for (let i = 1; i < this.population.length; i += 1) {
+      if (bestValue > this.populationEvaluation[i]) {
+        bestValue = this.populationEvaluation[i];
+        index = i;
+      }
+    }
+
+    return {
+      index,
+      bestValue,
+    };
   }
 }
