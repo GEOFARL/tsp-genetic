@@ -5,6 +5,7 @@ import { RootState } from '../store';
 
 export interface GASlice {
   points: IPoint[];
+  route: number[];
   running: boolean;
   config: {
     populationSize: number;
@@ -15,6 +16,7 @@ export interface GASlice {
 
 const initialState: GASlice = {
   points: [],
+  route: [],
   running: false,
   config: {
     populationSize: 30,
@@ -45,6 +47,9 @@ export const GASlice = createSlice({
     setMutationProbability: (state, action: PayloadAction<number>) => {
       state.config.mutationProbability = action.payload;
     },
+    setRoute: (state, action: PayloadAction<number[]>) => {
+      state.route = action.payload;
+    },
   },
 });
 
@@ -55,10 +60,12 @@ export const {
   setCrossoverProbability,
   setMutationProbability,
   setPopulationSize,
+  setRoute,
 } = GASlice.actions;
 
 export const selectPoints = (state: RootState) => state.GA.points;
 export const selectRunning = (state: RootState) => state.GA.running;
 export const selectConfig = (state: RootState) => state.GA.config;
+export const selectRoute = (state: RootState) => state.GA.route;
 
 export default GASlice.reducer;

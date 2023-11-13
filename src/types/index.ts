@@ -16,3 +16,12 @@ export enum Mutation {
 export enum LocalImprovement {
   OFF = 'off',
 }
+
+export interface GAConfig {
+  populationSize: number;
+  crossoverProbability: number;
+  mutationProbability: number;
+  crossover: Crossover;
+  mutation: Mutation;
+  localImprovement: LocalImprovement;
+}

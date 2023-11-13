@@ -10,10 +10,12 @@ import useClearAll from '../hooks/useClearAll';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../app/store';
 import { setRunning } from '../app/slices/GASlice';
+import useStartAlgorithm from '../hooks/useStartAlgorithm';
 
 const ControlPanel = () => {
   const generatePoints = useGeneratePoints();
   const clearAllPoints = useClearAll();
+  const startAlgo = useStartAlgorithm();
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -35,7 +37,13 @@ const ControlPanel = () => {
         Control Panel
       </Typography>
       <Stack direction={'row'} spacing={2}>
-        <Button variant="contained" onClick={() => dispatch(setRunning(true))}>
+        <Button
+          variant="contained"
+          onClick={() => {
+            dispatch(setRunning(true));
+            startAlgo();
+          }}
+        >
           Start <PlayArrowIcon />
         </Button>
         <Button
