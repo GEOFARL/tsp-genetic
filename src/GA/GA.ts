@@ -12,6 +12,7 @@ export default class GA {
   private distances: number[][] = [];
   private population: number[][] = [];
   private populationEvaluation: number[] = [];
+  private roulette: number[] = [];
   private bestPopulation: { value: number; population: number[] } | null = null;
 
   private readonly CROSSOVER_TYPE: Crossover;
@@ -21,6 +22,8 @@ export default class GA {
   private readonly CROSSOVER_PROBABILITY: number;
   private readonly MUTATION_PROBABILITY: number;
   private readonly POPULATION_SIZE: number;
+
+  private generationCount = 0;
 
   constructor(points: IPoint[], config: GAConfig) {
     this.points = points;
@@ -48,10 +51,39 @@ export default class GA {
   }
 
   public getRoute(): number[] {
+    this.getNextGeneration();
     return this.bestPopulation!.population!;
   }
 
-  private getNextGeneration() {}
+  private getNextGeneration() {
+    this.generationCount += 1;
+
+    this.selection();
+    this.crossover();
+    this.mutation();
+    this.localImprovement();
+
+    // this.findBestPopulation();
+  }
+
+  private selection() {
+    const newPopulation = [];
+
+    newPopulation.push(this.bestPopulation!.population);
+    this.loadRoulette();
+
+    for (let i = 1; i < this.POPULATION_SIZE; i += 1) {
+      newPopulation.push(this.population[this.rollRoulette(Math.random())]);
+    }
+
+    this.population = newPopulation;
+  }
+
+  private crossover() {}
+
+  private mutation() {}
+
+  private localImprovement() {}
 
   private computeDistances() {
     for (let i = 0; i < this.points.length; i += 1) {
@@ -125,5 +157,36 @@ export default class GA {
       index,
       bestValue,
     };
+  }
+
+  private loadRoulette() {
+    const fitnessValues = this.populationEvaluation.map(
+      (evaluation) => 1 / evaluation
+    );
+
+    const sum = fitnessValues.reduce((prev, acc) => acc + prev, 0);
+
+    this.roulette = fitnessValues.map((value) => value / sum);
+
+    for (let i = 1; i < this.roulette.length; i += 1) {
+      this.roulette[i] += this.roulette[i - 1];
+    }
+  }
+
+  private rollRoulette(randomNumber: number) {
+    if (randomNumber < this.roulette[0]) {
+      return 0;
+    }
+
+    for (let i = 1; i < this.roulette.length; i += 1) {
+      if (
+        randomNumber > this.roulette[i - 1] &&
+        randomNumber < this.roulette[i]
+      ) {
+        return i;
+      }
+    }
+
+    return -1;
   }
 }
