@@ -57,11 +57,7 @@ export default class GA {
   }
 
   public getRoute(): number[] {
-    for (let i = 0; i < 100; i += 1) {
-      this.getNextGeneration();
-      console.log(this.bestPopulation?.value);
-      console.log(this.bestPopulation?.population.slice());
-    }
+    this.getNextGeneration();
     return this.bestPopulation!.population!;
   }
 

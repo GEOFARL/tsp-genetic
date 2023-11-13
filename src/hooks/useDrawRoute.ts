@@ -1,12 +1,15 @@
 import { MutableRefObject, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { selectPoints, selectRoute } from '../app/slices/GASlice';
+import { selectBoard } from '../app/slices/boardSlice';
 
 export default function useDrawRoute(
   ref: MutableRefObject<HTMLCanvasElement | null>
 ) {
   const route = useSelector(selectRoute);
   const points = useSelector(selectPoints);
+
+  const { showNumbers } = useSelector(selectBoard);
 
   useEffect(() => {
     if (ref.current && route.length > 0) {
@@ -25,5 +28,5 @@ export default function useDrawRoute(
       ctx!.stroke();
       ctx!.closePath();
     }
-  }, [ref, route, points]);
+  }, [ref, route, points, showNumbers]);
 }

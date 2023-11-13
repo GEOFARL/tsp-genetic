@@ -7,9 +7,13 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import AddIcon from '@mui/icons-material/Add';
 import useGeneratePoints from '../hooks/useGeneratePoints';
 import useClearAll from '../hooks/useClearAll';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../app/store';
-import { setRunning } from '../app/slices/GASlice';
+import {
+  removeRoute,
+  selectPoints,
+  setIntervalId,
+} from '../app/slices/GASlice';
 import useStartAlgorithm from '../hooks/useStartAlgorithm';
 
 const ControlPanel = () => {
@@ -18,6 +22,7 @@ const ControlPanel = () => {
   const startAlgo = useStartAlgorithm();
 
   const dispatch = useDispatch<AppDispatch>();
+  const points = useSelector(selectPoints);
 
   return (
     <Box
@@ -40,8 +45,9 @@ const ControlPanel = () => {
         <Button
           variant="contained"
           onClick={() => {
-            dispatch(setRunning(true));
-            startAlgo();
+            if (points.length > 0) {
+              startAlgo();
+            }
           }}
         >
           Start <PlayArrowIcon />
@@ -49,14 +55,17 @@ const ControlPanel = () => {
         <Button
           variant="outlined"
           color="error"
-          onClick={() => dispatch(setRunning(false))}
+          onClick={() => {
+            dispatch(setIntervalId(null));
+          }}
         >
           Stop <StopIcon />
         </Button>
         <Button
           variant="contained"
           onClick={() => {
-            dispatch(setRunning(false));
+            dispatch(setIntervalId(null));
+            dispatch(removeRoute());
             generatePoints(50);
           }}
         >
@@ -66,7 +75,7 @@ const ControlPanel = () => {
           variant="contained"
           color={'error'}
           onClick={() => {
-            dispatch(setRunning(false));
+            dispatch(setIntervalId(null));
             clearAllPoints();
           }}
         >

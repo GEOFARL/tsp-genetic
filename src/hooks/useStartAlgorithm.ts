@@ -1,7 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../app/store';
 import GA from '../GA/GA';
-import { selectConfig, selectPoints, setRoute } from '../app/slices/GASlice';
+import {
+  selectConfig,
+  selectPoints,
+  setIntervalId,
+  setRoute,
+} from '../app/slices/GASlice';
 import { selectParameters } from '../app/slices/algorithmParametersSlice';
 
 export default function useStartAlgorithm() {
@@ -12,10 +17,12 @@ export default function useStartAlgorithm() {
 
   const startAlgo = () => {
     const geneticAlgorithm = new GA(points, { ...config, ...parameters });
+    const id = setInterval(() => {
+      const route = geneticAlgorithm.getRoute();
+      dispatch(setRoute(route));
+    }, 10);
 
-    const route = geneticAlgorithm.getRoute();
-
-    dispatch(setRoute(route));
+    dispatch(setIntervalId(id));
   };
 
   return startAlgo;

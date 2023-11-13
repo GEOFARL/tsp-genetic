@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { selectPoints } from '../app/slices/GASlice';
+import { selectPoints, selectRoute } from '../app/slices/GASlice';
 import { IPoint } from '../types';
 import { selectBoard } from '../app/slices/boardSlice';
 
@@ -8,6 +8,7 @@ export default function useDrawPoints(
   ref: React.MutableRefObject<HTMLCanvasElement | null>
 ) {
   const points = useSelector(selectPoints);
+  const route = useSelector(selectRoute);
   const { WIDTH, HEIGHT, showNumbers } = useSelector(selectBoard);
 
   useEffect(() => {
@@ -39,5 +40,5 @@ export default function useDrawPoints(
         drawCircle(points[i], i + 1);
       }
     }
-  }, [ref, points, WIDTH, HEIGHT, showNumbers]);
+  }, [ref, points, WIDTH, HEIGHT, showNumbers, route]);
 }

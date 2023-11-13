@@ -6,7 +6,7 @@ import { RootState } from '../store';
 export interface GASlice {
   points: IPoint[];
   route: number[];
-  running: boolean;
+  intervalId: number | null;
   config: {
     populationSize: number;
     crossoverProbability: number;
@@ -17,7 +17,7 @@ export interface GASlice {
 const initialState: GASlice = {
   points: [],
   route: [],
-  running: false,
+  intervalId: null,
   config: {
     populationSize: 30,
     crossoverProbability: 0.9,
@@ -35,9 +35,6 @@ export const GASlice = createSlice({
     removePoints: (state) => {
       state.points = [];
     },
-    setRunning: (state, action: PayloadAction<boolean>) => {
-      state.running = action.payload;
-    },
     setPopulationSize: (state, action: PayloadAction<number>) => {
       state.config.populationSize = action.payload;
     },
@@ -50,21 +47,35 @@ export const GASlice = createSlice({
     setRoute: (state, action: PayloadAction<number[]>) => {
       state.route = action.payload;
     },
+    clearAll: (state) => {
+      state.route = [];
+      state.points = [];
+    },
+    removeRoute: (state) => {
+      state.route = [];
+    },
+    setIntervalId: (state, action: PayloadAction<number | null>) => {
+      if (action.payload === null && state.intervalId) {
+        clearInterval(state.intervalId);
+      }
+      state.intervalId = action.payload;
+    },
   },
 });
 
 export const {
   addPoints,
   removePoints,
-  setRunning,
   setCrossoverProbability,
   setMutationProbability,
   setPopulationSize,
   setRoute,
+  clearAll,
+  removeRoute,
+  setIntervalId,
 } = GASlice.actions;
 
 export const selectPoints = (state: RootState) => state.GA.points;
-export const selectRunning = (state: RootState) => state.GA.running;
 export const selectConfig = (state: RootState) => state.GA.config;
 export const selectRoute = (state: RootState) => state.GA.route;
 
