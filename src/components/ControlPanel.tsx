@@ -6,9 +6,11 @@ import StopIcon from '@mui/icons-material/Stop';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import AddIcon from '@mui/icons-material/Add';
 import useGeneratePoints from '../hooks/useGeneratePoints';
+import useClearAll from '../hooks/useClearAll';
 
 const ControlPanel = () => {
   const generatePoints = useGeneratePoints();
+  const clearAllPoints = useClearAll();
 
   return (
     <Stack
@@ -22,17 +24,13 @@ const ControlPanel = () => {
       <Button variant="contained">
         Start <PlayArrowIcon />
       </Button>
-      <Button variant="outlined">
+      <Button variant="outlined" color="error">
         Stop <StopIcon />
       </Button>
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={() => generatePoints(50)}
-      >
+      <Button variant="contained" onClick={() => generatePoints(50)}>
         Generate vertices <AddIcon />
       </Button>
-      <Button variant="contained" color={'error'}>
+      <Button variant="contained" color={'error'} onClick={clearAllPoints}>
         Clear All <DeleteIcon sx={{ pb: '.15rem' }} />
       </Button>
     </Stack>

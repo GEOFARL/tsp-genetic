@@ -4,6 +4,7 @@ import { grey } from '@mui/material/colors';
 import Board from './components/Board';
 import ControlPanel from './components/ControlPanel';
 import Stats from './components/Stats';
+import Settings from './components/Settings';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         }}
       >
         <ControlPanel />
+        <Settings />
         <Stats />
         <Board />
       </Container>

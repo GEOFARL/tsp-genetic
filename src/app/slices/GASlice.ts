@@ -18,10 +18,13 @@ export const GASlice = createSlice({
     addPoints: (state, action: PayloadAction<IPoint[]>) => {
       state.points = [...state.points, ...action.payload];
     },
+    removePoints: (state) => {
+      state.points = [];
+    },
   },
 });
 
-export const { addPoints } = GASlice.actions;
+export const { addPoints, removePoints } = GASlice.actions;
 
 export const selectPoints = (state: RootState) => state.GA.points;
 

@@ -5,25 +5,30 @@ import { RootState } from '../store';
 export interface BoardSlice {
   HEIGHT: number | null;
   WIDTH: number | null;
+  showNumbers: boolean;
 }
 
 const initialState: BoardSlice = {
   HEIGHT: null,
   WIDTH: null,
+  showNumbers: false,
 };
 
 export const boardSlice = createSlice({
   name: 'board',
   initialState,
   reducers: {
-    init: (state, action: PayloadAction<BoardSlice>) => {
+    init: (state, action: PayloadAction<{ HEIGHT: number; WIDTH: number }>) => {
       state.HEIGHT = action.payload.HEIGHT;
       state.WIDTH = action.payload.WIDTH;
+    },
+    toggleShowNumbers: (state) => {
+      state.showNumbers = !state.showNumbers;
     },
   },
 });
 
-export const { init } = boardSlice.actions;
+export const { init, toggleShowNumbers } = boardSlice.actions;
 
 export const selectBoard = (state: RootState) => state.board;
 
