@@ -78,5 +78,6 @@ export const {
 export const selectPoints = (state: RootState) => state.GA.points;
 export const selectConfig = (state: RootState) => state.GA.config;
 export const selectRoute = (state: RootState) => state.GA.route;
+export const selectIntervalId = (state: RootState) => state.GA.intervalId;
 
 export default GASlice.reducer;

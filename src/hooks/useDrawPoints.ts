@@ -20,19 +20,29 @@ export default function useDrawPoints(
 
     if (points.length > 0 && ref.current) {
       const drawCircle = (point: IPoint, index: number) => {
+        let radius = 2;
+        let distance = 5;
+        let fontSize = 10;
         if (index === 1) {
           ctx!.fillStyle = '#00ff00';
+          radius = 8;
+          distance = 9;
+          fontSize = 14;
         } else if (index === points.length) {
           ctx!.fillStyle = '#ff0000';
+          radius = 8;
+          distance = 9;
+          fontSize = 14;
         } else {
           ctx!.fillStyle = '#000';
         }
         ctx!.beginPath();
-        ctx!.arc(point.x, point.y, 2, 0, Math.PI * 2, true);
+        ctx!.arc(point.x, point.y, radius, 0, Math.PI * 2, true);
         ctx!.closePath();
         ctx!.fill();
         if (showNumbers) {
-          ctx!.fillText(`${index}`, point.x + 5, point.y + 5);
+          ctx!.font = `${fontSize}px serif`;
+          ctx!.fillText(`${index}`, point.x + distance, point.y + distance);
         }
       };
 

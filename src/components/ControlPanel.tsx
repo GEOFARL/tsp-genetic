@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../app/store';
 import {
   removeRoute,
+  selectIntervalId,
   selectPoints,
   setIntervalId,
 } from '../app/slices/GASlice';
@@ -23,6 +24,7 @@ const ControlPanel = () => {
 
   const dispatch = useDispatch<AppDispatch>();
   const points = useSelector(selectPoints);
+  const intervalId = useSelector(selectIntervalId);
 
   return (
     <Box
@@ -45,7 +47,7 @@ const ControlPanel = () => {
         <Button
           variant="contained"
           onClick={() => {
-            if (points.length > 0) {
+            if (points.length > 0 && !intervalId) {
               startAlgo();
             }
           }}

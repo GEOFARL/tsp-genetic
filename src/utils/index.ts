@@ -14,7 +14,6 @@ declare global {
     next(idx: number): T;
     previous(idx: number): T;
     deleteByValue(value: T): void;
-    swap(x: number, y: number): void;
   }
 }
 
@@ -38,11 +37,15 @@ Array.prototype.deleteByValue = function (value) {
   this.splice(pos, 1);
 };
 
-Array.prototype.swap = function (x, y) {
-  if (x > this.length || y > this.length || x === y) {
+export const swap = (x: number, y: number, arr: number[]) => {
+  if (x > arr.length || y > arr.length || x === y) {
     return;
   }
-  const temp = this[x];
-  this[x] = this[y];
-  this[y] = temp;
+  const arrCopy = arr.slice();
+
+  const temp = arrCopy[x];
+  arrCopy[x] = arrCopy[y];
+  arrCopy[y] = temp;
+
+  return arrCopy;
 };

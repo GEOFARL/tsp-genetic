@@ -59,7 +59,6 @@ const BoardSettings = () => {
             <FormControlLabel
               control={
                 <Switch
-                  defaultChecked
                   checked={showNumbers}
                   onChange={() => dispatch(toggleShowNumbers())}
                 />

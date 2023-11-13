@@ -5,7 +5,7 @@ import {
   LocalImprovement,
   Mutation,
 } from '../types';
-import { getRandomNumber, shuffle } from '../utils';
+import { getRandomNumber, shuffle, swap } from '../utils';
 
 export default class GA {
   private points: IPoint[];
@@ -51,8 +51,6 @@ export default class GA {
 
     this.computeDistances();
     this.generatePopulation();
-    console.log(this);
-    console.log(this.population.slice());
     this.findBestPopulation();
   }
 
@@ -200,7 +198,8 @@ export default class GA {
 
     const j = Math.floor((n - m + 1) / 2);
     for (let i = 0; i < j; i += 1) {
-      chromosome.swap(m + i, n - i);
+      const result = swap(m + i, n - i, chromosome);
+      if (result) chromosome = result;
     }
 
     return chromosome;
