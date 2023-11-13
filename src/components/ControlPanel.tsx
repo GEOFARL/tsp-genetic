@@ -7,10 +7,15 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import AddIcon from '@mui/icons-material/Add';
 import useGeneratePoints from '../hooks/useGeneratePoints';
 import useClearAll from '../hooks/useClearAll';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../app/store';
+import { setRunning } from '../app/slices/GASlice';
 
 const ControlPanel = () => {
   const generatePoints = useGeneratePoints();
   const clearAllPoints = useClearAll();
+
+  const dispatch = useDispatch<AppDispatch>();
 
   return (
     <Box
@@ -30,16 +35,33 @@ const ControlPanel = () => {
         Control Panel
       </Typography>
       <Stack direction={'row'} spacing={2}>
-        <Button variant="contained">
+        <Button variant="contained" onClick={() => dispatch(setRunning(true))}>
           Start <PlayArrowIcon />
         </Button>
-        <Button variant="outlined" color="error">
+        <Button
+          variant="outlined"
+          color="error"
+          onClick={() => dispatch(setRunning(false))}
+        >
           Stop <StopIcon />
         </Button>
-        <Button variant="contained" onClick={() => generatePoints(50)}>
+        <Button
+          variant="contained"
+          onClick={() => {
+            dispatch(setRunning(false));
+            generatePoints(50);
+          }}
+        >
           Generate vertices <AddIcon />
         </Button>
-        <Button variant="contained" color={'error'} onClick={clearAllPoints}>
+        <Button
+          variant="contained"
+          color={'error'}
+          onClick={() => {
+            dispatch(setRunning(false));
+            clearAllPoints();
+          }}
+        >
           Clear All <DeleteIcon sx={{ pb: '.15rem' }} />
         </Button>
       </Stack>

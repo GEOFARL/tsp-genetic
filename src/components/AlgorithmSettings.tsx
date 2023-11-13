@@ -20,6 +20,7 @@ import {
   setMutation,
 } from '../app/slices/algorithmParametersSlice';
 import { Crossover, LocalImprovement, Mutation } from '../types';
+import MetricsConfig from './MetricsConfig';
 
 const AlgorithmSettings = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -135,6 +136,12 @@ const AlgorithmSettings = () => {
                 ))}
               </Select>
             </FormControl>
+          </Box>
+
+          <Divider sx={{ borderBottomWidth: 2 }} />
+
+          <Box sx={{ padding: '15px 20px' }}>
+            <MetricsConfig />
           </Box>
         </Stack>
       </Popover>
