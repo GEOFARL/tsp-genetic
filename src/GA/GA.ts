@@ -11,7 +11,7 @@ export default class GA {
   private points: IPoint[];
   private distances: number[][] = [];
   private population: number[][] = [];
-  private populationEvaluation: number[] = [];
+  private populationEvaluation: number[];
   private roulette: number[] = [];
   private bestPopulation: { value: number; population: number[] } | null = null;
 
@@ -24,6 +24,7 @@ export default class GA {
   private readonly POPULATION_SIZE: number;
 
   private generationCount = 0;
+  private mutationCount = 0;
 
   constructor(points: IPoint[], config: GAConfig) {
     this.points = points;
@@ -45,13 +46,22 @@ export default class GA {
     this.CROSSOVER_PROBABILITY = crossoverProbability;
     this.MUTATION_PROBABILITY = mutationProbability;
 
+    this.populationEvaluation = new Array(this.POPULATION_SIZE);
+    this.roulette = new Array(this.POPULATION_SIZE);
+
     this.computeDistances();
     this.generatePopulation();
+    console.log(this);
+    console.log(this.population.slice());
     this.findBestPopulation();
   }
 
   public getRoute(): number[] {
-    this.getNextGeneration();
+    for (let i = 0; i < 100; i += 1) {
+      this.getNextGeneration();
+      console.log(this.bestPopulation?.value);
+      console.log(this.bestPopulation?.population.slice());
+    }
     return this.bestPopulation!.population!;
   }
 
@@ -63,7 +73,7 @@ export default class GA {
     this.mutation();
     this.localImprovement();
 
-    // this.findBestPopulation();
+    this.findBestPopulation();
   }
 
   private selection() {
@@ -73,13 +83,16 @@ export default class GA {
     this.loadRoulette();
 
     for (let i = 1; i < this.POPULATION_SIZE; i += 1) {
-      newPopulation.push(this.population[this.rollRoulette(Math.random())]);
+      const rouletteResult = this.rollRoulette(Math.random());
+      newPopulation.push(this.population[rouletteResult]);
     }
 
     this.population = newPopulation;
   }
 
   private crossover() {
+    if (this.CROSSOVER_TYPE === Crossover.OFF) return;
+
     switch (this.CROSSOVER_TYPE) {
       case Crossover.HEURISTIC: {
         const array = [];
@@ -90,12 +103,9 @@ export default class GA {
         }
 
         shuffle(array);
-        for (let i = 0; i < array.length; i += 2) {
+        for (let i = 0; i < array.length - 2; i += 2) {
           this.heuristicCrossover(array[i], array[i + 1]);
         }
-        break;
-      }
-      case Crossover.OFF: {
         break;
       }
     }
@@ -167,17 +177,49 @@ export default class GA {
     return solution;
   }
 
-  private mutation() {}
+  private mutation() {
+    if (this.MUTATION_TYPE === Mutation.OFF) return;
 
-  private localImprovement() {}
+    for (let i = 0; i < this.POPULATION_SIZE; i += 1) {
+      if (Math.random() < this.MUTATION_PROBABILITY) {
+        switch (this.MUTATION_TYPE) {
+          case Mutation.SWAP: {
+            this.population[i] = this.swapMutate(this.population[i]);
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  private swapMutate(chromosome: number[]): number[] {
+    this.mutationCount += 1;
+
+    let m;
+    let n;
+    do {
+      m = getRandomNumber(0, chromosome.length - 3);
+      n = getRandomNumber(0, chromosome.length - 1);
+    } while (m >= n);
+
+    const j = Math.floor((n - m + 1) / 2);
+    for (let i = 0; i < j; i += 1) {
+      chromosome.swap(m + i, n - i);
+    }
+
+    return chromosome;
+  }
+
+  private localImprovement() {
+    if (this.LOCAL_IMPROVEMENT_TYPE === LocalImprovement.OFF) return;
+  }
 
   private computeDistances() {
+    this.distances = new Array(this.points.length);
     for (let i = 0; i < this.points.length; i += 1) {
-      this.distances.push(new Array<number>(this.points.length));
+      this.distances[i] = new Array<number>(this.points.length);
       for (let j = 0; j < this.points.length; j += 1) {
-        this.distances[i].push(
-          this.getDistance(this.points[i], this.points[j])
-        );
+        this.distances[i][j] = this.getDistance(this.points[i], this.points[j]);
       }
     }
   }
@@ -202,14 +244,14 @@ export default class GA {
 
   private findBestPopulation() {
     for (let i = 0; i < this.population.length; i += 1) {
-      this.populationEvaluation.push(this.evaluate(this.population[i]));
+      this.populationEvaluation[i] = this.evaluate(this.population[i]);
     }
 
     const currentBestPopulation = this.getBestPopulation();
 
     if (
       this.bestPopulation === null ||
-      this.bestPopulation.value < currentBestPopulation.bestValue
+      this.bestPopulation.value > currentBestPopulation.bestValue
     ) {
       this.bestPopulation = {
         population: this.population[currentBestPopulation.index].slice(),
@@ -266,8 +308,8 @@ export default class GA {
 
     for (let i = 1; i < this.roulette.length; i += 1) {
       if (
-        randomNumber > this.roulette[i - 1] &&
-        randomNumber < this.roulette[i]
+        randomNumber >= this.roulette[i - 1] &&
+        randomNumber <= this.roulette[i]
       ) {
         return i;
       }
