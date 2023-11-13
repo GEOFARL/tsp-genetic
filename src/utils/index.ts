@@ -8,3 +8,31 @@ export const shuffle = (array: number[]) => {
     [array[i], array[j]] = [array[j], array[i]];
   }
 };
+
+declare global {
+  interface Array<T> {
+    next(idx: number): T;
+    previous(idx: number): T;
+    deleteByValue(value: T): void;
+  }
+}
+
+Array.prototype.next = function (idx: number) {
+  if (idx === this.length - 1) {
+    return this[0];
+  } else {
+    return this[idx + 1];
+  }
+};
+Array.prototype.previous = function (idx: number) {
+  if (idx === 0) {
+    return this[this.length - 1];
+  } else {
+    return this[idx - 1];
+  }
+};
+
+Array.prototype.deleteByValue = function (value) {
+  const pos = this.indexOf(value);
+  this.splice(pos, 1);
+};

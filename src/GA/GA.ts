@@ -5,7 +5,7 @@ import {
   LocalImprovement,
   Mutation,
 } from '../types';
-import { shuffle } from '../utils';
+import { getRandomNumber, shuffle } from '../utils';
 
 export default class GA {
   private points: IPoint[];
@@ -79,7 +79,93 @@ export default class GA {
     this.population = newPopulation;
   }
 
-  private crossover() {}
+  private crossover() {
+    switch (this.CROSSOVER_TYPE) {
+      case Crossover.HEURISTIC: {
+        const array = [];
+        for (let i = 0; i < this.POPULATION_SIZE; i += 1) {
+          if (Math.random() < this.CROSSOVER_PROBABILITY) {
+            array.push(i);
+          }
+        }
+
+        shuffle(array);
+        for (let i = 0; i < array.length; i += 2) {
+          this.heuristicCrossover(array[i], array[i + 1]);
+        }
+        break;
+      }
+      case Crossover.OFF: {
+        break;
+      }
+    }
+  }
+
+  private heuristicCrossover(
+    firstChromosomeIdx: number,
+    secondChromosomeIdx: number
+  ) {
+    const firstChild = this.getChild(
+      'next',
+      firstChromosomeIdx,
+      secondChromosomeIdx
+    );
+    const secondChild = this.getChild(
+      'previous',
+      firstChromosomeIdx,
+      secondChromosomeIdx
+    );
+
+    this.population[firstChromosomeIdx] = firstChild;
+    this.population[secondChromosomeIdx] = secondChild;
+  }
+
+  private getChild(
+    method: 'next' | 'previous',
+    firstChromosomeIdx: number,
+    secondChromosomeIdx: number
+  ): number[] {
+    const solution = [];
+
+    const firstChromosome = this.population[firstChromosomeIdx].slice();
+    const secondChromosome = this.population[secondChromosomeIdx].slice();
+
+    let randomPoint =
+      firstChromosome[getRandomNumber(0, firstChromosome.length - 1)];
+    solution.push(randomPoint);
+
+    let firstPoint, secondPoint;
+
+    while (firstChromosome.length > 1) {
+      if (method === 'next') {
+        firstPoint = firstChromosome['next'](
+          firstChromosome.indexOf(randomPoint)
+        );
+        secondPoint = secondChromosome['next'](
+          secondChromosome.indexOf(randomPoint)
+        );
+      } else {
+        firstPoint = firstChromosome['previous'](
+          firstChromosome.indexOf(randomPoint)
+        );
+        secondPoint = secondChromosome['previous'](
+          secondChromosome.indexOf(randomPoint)
+        );
+      }
+
+      firstChromosome.deleteByValue(randomPoint);
+      secondChromosome.deleteByValue(randomPoint);
+
+      randomPoint =
+        this.distances[randomPoint][firstPoint] <
+        this.distances[randomPoint][secondPoint]
+          ? firstPoint
+          : secondPoint;
+      solution.push(randomPoint);
+    }
+
+    return solution;
+  }
 
   private mutation() {}
 
