@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { IPoint } from '../../types';
+import { RootState } from '../store';
 
 export interface GASlice {
   points: IPoint[];
@@ -21,5 +22,7 @@ export const GASlice = createSlice({
 });
 
 export const { addPoints } = GASlice.actions;
+
+export const selectPoints = (state: RootState) => state.GA.points;
 
 export default GASlice.reducer;

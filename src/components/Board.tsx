@@ -1,8 +1,11 @@
 import { Box } from '@mui/system';
 import useBoard from '../hooks/useBoard';
+import useDrawPoints from '../hooks/useDrawPoints';
 
 const Board = () => {
   const { ref: boardRef } = useBoard();
+
+  useDrawPoints(boardRef);
   return (
     <Box sx={{ margin: '1.5rem auto 0 auto', width: 'max-content' }}>
       <canvas
