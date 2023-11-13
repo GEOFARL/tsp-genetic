@@ -1,5 +1,5 @@
-import { Button } from '@mui/material';
-import { Stack } from '@mui/system';
+import { Button, Typography } from '@mui/material';
+import { Box, Stack } from '@mui/system';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import StopIcon from '@mui/icons-material/Stop';
@@ -13,27 +13,37 @@ const ControlPanel = () => {
   const clearAllPoints = useClearAll();
 
   return (
-    <Stack
-      direction={'row'}
+    <Box
       sx={{
         maxWidth: '900px',
         margin: '1rem auto 0 auto',
       }}
-      spacing={2}
     >
-      <Button variant="contained">
-        Start <PlayArrowIcon />
-      </Button>
-      <Button variant="outlined" color="error">
-        Stop <StopIcon />
-      </Button>
-      <Button variant="contained" onClick={() => generatePoints(50)}>
-        Generate vertices <AddIcon />
-      </Button>
-      <Button variant="contained" color={'error'} onClick={clearAllPoints}>
-        Clear All <DeleteIcon sx={{ pb: '.15rem' }} />
-      </Button>
-    </Stack>
+      <Typography
+        variant="h5"
+        sx={{
+          fontFamily: 'Poppins, sans-serif',
+          fontWeight: '500',
+          mb: '5px',
+        }}
+      >
+        Control Panel
+      </Typography>
+      <Stack direction={'row'} spacing={2}>
+        <Button variant="contained">
+          Start <PlayArrowIcon />
+        </Button>
+        <Button variant="outlined" color="error">
+          Stop <StopIcon />
+        </Button>
+        <Button variant="contained" onClick={() => generatePoints(50)}>
+          Generate vertices <AddIcon />
+        </Button>
+        <Button variant="contained" color={'error'} onClick={clearAllPoints}>
+          Clear All <DeleteIcon sx={{ pb: '.15rem' }} />
+        </Button>
+      </Stack>
+    </Box>
   );
 };
 

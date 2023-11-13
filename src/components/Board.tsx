@@ -14,6 +14,8 @@ const Board = () => {
         style={{
           border: '2px solid black',
           borderRadius: '8px',
+          backgroundColor: 'white',
+          boxShadow: '0 2px 6px 1px rgba(0, 0, 0, .2)',
         }}
         ref={boardRef}
       >

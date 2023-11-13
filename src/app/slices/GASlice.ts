@@ -12,7 +12,7 @@ const initialState: GASlice = {
 };
 
 export const GASlice = createSlice({
-  name: 'board',
+  name: 'GA',
   initialState,
   reducers: {
     addPoints: (state, action: PayloadAction<IPoint[]>) => {

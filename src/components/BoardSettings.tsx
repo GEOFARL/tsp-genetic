@@ -27,7 +27,7 @@ const BoardSettings = () => {
   };
 
   const open = Boolean(anchorEl);
-  const id = open ? 'simple-popover' : undefined;
+  const id = open ? 'board-settings-popover' : undefined;
 
   return (
     <div>
