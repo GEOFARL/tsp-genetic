@@ -15,6 +15,7 @@ export enum Mutation {
 
 export enum LocalImprovement {
   TWO_OPT = 'two_opt',
+  THREE_OPT = 'three_opt',
   OFF = 'off',
 }
 

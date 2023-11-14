@@ -211,42 +211,191 @@ export default class GA {
   private localImprovement() {
     if (this.LOCAL_IMPROVEMENT_TYPE === LocalImprovement.OFF) return;
 
+    if (Math.random() > this.LOCAL_IMPROVEMENT_PROBABILITY) {
+      return;
+    }
+
     switch (this.LOCAL_IMPROVEMENT_TYPE) {
       case LocalImprovement.TWO_OPT: {
-        if (Math.random() > this.LOCAL_IMPROVEMENT_PROBABILITY) {
-          break;
-        }
-
-        const chromosome = this.population[0];
-        let bestChromosome = chromosome;
-        let value = this.evaluate(chromosome);
-
-        for (let i = 0; i < 150; i += 1) {
-          const randomNumber1 = getRandomNumber(0, this.points.length - 1);
-          const randomNumber2 = getRandomNumber(
-            randomNumber1,
-            this.points.length - 1
-          );
-
-          const newChromosome = this.twoOpt(
-            chromosome,
-            randomNumber1,
-            randomNumber2
-          );
-          const newValue = this.evaluate(newChromosome);
-
-          if (newValue < value) {
-            bestChromosome = newChromosome;
-            value = newValue;
-          }
-        }
-        this.population[0] = bestChromosome;
+        this.twoOpt();
+        break;
+      }
+      case LocalImprovement.THREE_OPT: {
+        this.threeOpt();
         break;
       }
     }
   }
 
-  private twoOpt(chromosome: number[], v1: number, v2: number): number[] {
+  private threeOpt() {
+    const chromosome = this.population[0];
+    let bestChromosome = chromosome;
+    let value = this.evaluate(chromosome);
+
+    for (let i = 0; i < 150; i += 1) {
+      const randomNumber1 = getRandomNumber(0, this.points.length - 1);
+      const randomNumber2 = getRandomNumber(
+        randomNumber1,
+        this.points.length - 1
+      );
+      const randomNumber3 = getRandomNumber(
+        randomNumber2,
+        this.points.length - 1
+      );
+
+      const chromosomes = [];
+
+      chromosomes.push(
+        this.threeOptHelper(
+          chromosome,
+          randomNumber1,
+          randomNumber2,
+          randomNumber3,
+          true,
+          false,
+          false
+        )
+      );
+
+      chromosomes.push(
+        this.threeOptHelper(
+          chromosome,
+          randomNumber1,
+          randomNumber2,
+          randomNumber3,
+          true,
+          true,
+          false
+        )
+      );
+
+      chromosomes.push(
+        this.threeOptHelper(
+          chromosome,
+          randomNumber1,
+          randomNumber2,
+          randomNumber3,
+          true,
+          true,
+          true
+        )
+      );
+
+      chromosomes.push(
+        this.threeOptHelper(
+          chromosome,
+          randomNumber1,
+          randomNumber2,
+          randomNumber3,
+          false,
+          true,
+          false
+        )
+      );
+
+      chromosomes.push(
+        this.threeOptHelper(
+          chromosome,
+          randomNumber1,
+          randomNumber2,
+          randomNumber3,
+          false,
+          true,
+          true
+        )
+      );
+
+      chromosomes.push(
+        this.threeOptHelper(
+          chromosome,
+          randomNumber1,
+          randomNumber2,
+          randomNumber3,
+          false,
+          false,
+          true
+        )
+      );
+
+      let index = 0;
+      let minValue = this.evaluate(chromosomes[0]);
+
+      chromosomes.forEach((chromosome, i) => {
+        const val = this.evaluate(chromosome);
+        if (val < minValue) {
+          minValue = val;
+          index = i;
+        }
+      });
+
+      if (minValue < value) {
+        bestChromosome = chromosomes[index];
+        value = minValue;
+      }
+    }
+    this.population[0] = bestChromosome;
+  }
+
+  private threeOptHelper(
+    chromosome: number[],
+    v1: number,
+    v2: number,
+    v3: number,
+    isV1: boolean,
+    isV2: boolean,
+    isV3: boolean
+  ): number[] {
+    let newChromosome: number[] = [];
+    const p1 = chromosome.slice(0, v1);
+    const p2 = chromosome.slice(v1, v2);
+    const p3 = chromosome.slice(v2, v3);
+    const p4 = chromosome.slice(v3);
+
+    if (isV1) {
+      p1.reverse();
+      p4.reverse();
+    }
+
+    if (isV2) {
+      p2.reverse();
+    }
+
+    if (isV3) {
+      p3.reverse();
+    }
+
+    newChromosome = newChromosome.concat(p1).concat(p2).concat(p3).concat(p4);
+    return newChromosome;
+  }
+
+  private twoOpt() {
+    const chromosome = this.population[0];
+    let bestChromosome = chromosome;
+    let value = this.evaluate(chromosome);
+
+    for (let i = 0; i < 150; i += 1) {
+      const randomNumber1 = getRandomNumber(0, this.points.length - 1);
+      const randomNumber2 = getRandomNumber(
+        randomNumber1,
+        this.points.length - 1
+      );
+
+      const newChromosome = this.twoOptHelper(
+        chromosome,
+        randomNumber1,
+        randomNumber2
+      );
+      const newValue = this.evaluate(newChromosome);
+
+      if (newValue < value) {
+        bestChromosome = newChromosome;
+        value = newValue;
+      }
+    }
+    this.population[0] = bestChromosome;
+  }
+
+  private twoOptHelper(chromosome: number[], v1: number, v2: number): number[] {
     const newChromosome = chromosome
       .slice(0, v1)
       .concat(chromosome.slice(v1, v2).reverse())
