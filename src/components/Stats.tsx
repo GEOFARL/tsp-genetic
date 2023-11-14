@@ -18,6 +18,16 @@ const Stats = () => {
         mt: '1rem',
       }}
     >
+      <Typography
+        variant="h5"
+        sx={{
+          fontFamily: 'Poppins, sans-serif',
+          fontWeight: '500',
+          mb: '5px',
+        }}
+      >
+        Stats
+      </Typography>
       <Typography variant="body1">
         Generated number of vertices: {totalVertices}
       </Typography>

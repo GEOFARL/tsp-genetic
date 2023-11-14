@@ -24,7 +24,7 @@ import {
   setUpdateRate,
   toggleShowNumbers,
 } from '../app/slices/boardSlice';
-import { setIntervalId } from '../app/slices/GASlice';
+import useReset from '../hooks/useReset';
 
 const BoardSettings = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -37,6 +37,8 @@ const BoardSettings = () => {
     edgeThickness,
     updateRate,
   } = useSelector(selectBoard);
+
+  const reset = useReset();
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -190,7 +192,7 @@ const BoardSettings = () => {
               valueLabelDisplay="auto"
               value={updateRate}
               onChange={(_, newValue) => {
-                dispatch(setIntervalId(null));
+                reset();
                 dispatch(setUpdateRate(newValue as number));
               }}
               min={5}
@@ -205,7 +207,13 @@ const BoardSettings = () => {
               padding: '5px 20px 0 20px',
             }}
           >
-            <Button fullWidth onClick={() => dispatch(resetToDefault())}>
+            <Button
+              fullWidth
+              onClick={() => {
+                dispatch(resetToDefault());
+                reset();
+              }}
+            >
               Reset to Defaults
             </Button>
           </Box>

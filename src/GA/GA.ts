@@ -52,10 +52,12 @@ export default class GA {
     this.computeDistances();
     this.generatePopulation();
     this.findBestPopulation();
+    console.log('Initialized', JSON.parse(JSON.stringify(this)));
   }
 
   public getRoute(): number[] {
     this.getNextGeneration();
+    console.log('New generation', JSON.parse(JSON.stringify(this)));
     return this.bestPopulation!.population!;
   }
 

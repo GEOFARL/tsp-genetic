@@ -17,6 +17,9 @@ export interface GASlice {
   stats: {
     generationCount: number;
     totalDistance: number;
+    plotData: {
+      [key: string]: [number, number][];
+    };
   };
 }
 
@@ -34,6 +37,7 @@ const initialState: GASlice = {
   stats: {
     generationCount: 0,
     totalDistance: 0,
+    plotData: {},
   },
 };
 
@@ -85,10 +89,22 @@ export const GASlice = createSlice({
       state.stats = {
         generationCount: 0,
         totalDistance: 0,
+        plotData: {},
       };
     },
     setIsPaused: (state, action: PayloadAction<boolean>) => {
       state.isPaused = action.payload;
+    },
+    addGenerationDistance: (
+      state,
+      action: PayloadAction<[string, [number, number]]>
+    ) => {
+      const [key, value] = action.payload;
+      if (state.stats.plotData[key]) {
+        state.stats.plotData[key] = [...state.stats.plotData[key], value];
+      } else {
+        state.stats.plotData[key] = [value];
+      }
     },
   },
 });
@@ -108,6 +124,7 @@ export const {
   setGenerationCount,
   clearAllStats,
   setIsPaused,
+  addGenerationDistance,
 } = GASlice.actions;
 
 export const selectPoints = (state: RootState) => state.GA.points;
@@ -125,5 +142,6 @@ export const selectGenerationCount = (state: RootState) =>
 export const selectTotalDistance = (state: RootState) =>
   state.GA.stats.totalDistance;
 export const selectIsPaused = (state: RootState) => state.GA.isPaused;
+export const selectPlotData = (state: RootState) => state.GA.stats.plotData;
 
 export default GASlice.reducer;

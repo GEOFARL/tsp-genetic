@@ -21,12 +21,15 @@ import {
 } from '../app/slices/algorithmParametersSlice';
 import { Crossover, LocalImprovement, Mutation } from '../types';
 import MetricsConfig from './MetricsConfig';
+import useReset from '../hooks/useReset';
 
 const AlgorithmSettings = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const { crossover, localImprovement, mutation } =
     useSelector(selectParameters);
+
+  const reset = useReset();
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -75,9 +78,12 @@ const AlgorithmSettings = () => {
                 id="crossover-select"
                 value={crossover.toUpperCase()}
                 label="Crossover Type"
-                onChange={(e) =>
-                  dispatch(setCrossover(e.target.value as Crossover))
-                }
+                onChange={(e) => {
+                  dispatch(
+                    setCrossover(e.target.value.toLowerCase() as Crossover)
+                  );
+                  reset();
+                }}
               >
                 {Object.entries(Crossover).map((value) => (
                   <MenuItem key={value[0]} value={value[0]}>
@@ -98,9 +104,12 @@ const AlgorithmSettings = () => {
                 id="mutation-select"
                 value={mutation.toUpperCase()}
                 label="Mutation Type"
-                onChange={(e) =>
-                  dispatch(setMutation(e.target.value as Mutation))
-                }
+                onChange={(e) => {
+                  dispatch(
+                    setMutation(e.target.value.toLowerCase() as Mutation)
+                  );
+                  reset();
+                }}
               >
                 {Object.entries(Mutation).map((value) => (
                   <MenuItem key={value[0]} value={value[0]}>
@@ -123,11 +132,14 @@ const AlgorithmSettings = () => {
                 id="local-improvement-select"
                 value={localImprovement.toUpperCase()}
                 label="Local Improvement Type"
-                onChange={(e) =>
+                onChange={(e) => {
                   dispatch(
-                    setLocalImprovement(e.target.value as LocalImprovement)
-                  )
-                }
+                    setLocalImprovement(
+                      e.target.value.toLowerCase() as LocalImprovement
+                    )
+                  );
+                  reset();
+                }}
               >
                 {Object.entries(LocalImprovement).map((value) => (
                   <MenuItem key={value[0]} value={value[0]}>

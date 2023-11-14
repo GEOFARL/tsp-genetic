@@ -11,19 +11,21 @@ import useClearAll from '../hooks/useClearAll';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../app/store';
 import {
+  removeRoute,
   selectIntervalId,
   selectIsPaused,
   selectPoints,
-  setIntervalId,
   setIsPaused,
 } from '../app/slices/GASlice';
 import useStartAlgorithm from '../hooks/useStartAlgorithm';
 import VertexGenerator from './VertexGenerator';
 import { useState } from 'react';
+import useReset from '../hooks/useReset';
 
 const ControlPanel = () => {
   const [messageOpen, setMessageOpen] = useState(false);
   const clearAllPoints = useClearAll();
+  const reset = useReset();
   const startAlgo = useStartAlgorithm();
 
   const dispatch = useDispatch<AppDispatch>();
@@ -95,8 +97,8 @@ const ControlPanel = () => {
           variant="outlined"
           color="error"
           onClick={() => {
-            dispatch(setIntervalId(null));
-            dispatch(setIsPaused(false));
+            reset();
+            dispatch(removeRoute());
           }}
         >
           Reset <StopIcon />
@@ -106,9 +108,8 @@ const ControlPanel = () => {
           variant="contained"
           color={'error'}
           onClick={() => {
-            dispatch(setIntervalId(null));
+            reset();
             clearAllPoints();
-            dispatch(setIsPaused(false));
           }}
         >
           Clear All <DeleteIcon sx={{ pb: '.15rem' }} />

@@ -8,11 +8,14 @@ import {
 import { AppDispatch } from '../app/store';
 import { Box, Stack } from '@mui/system';
 import { Slider, TextField, Typography } from '@mui/material';
+import useReset from '../hooks/useReset';
 
 const MetricsConfig = () => {
   const { crossoverProbability, mutationProbability, populationSize } =
     useSelector(selectConfig);
   const dispatch = useDispatch<AppDispatch>();
+
+  const reset = useReset();
   return (
     <Box>
       <Stack direction={'column'} spacing={1}>
@@ -25,6 +28,7 @@ const MetricsConfig = () => {
           onChange={(e) => {
             if (+e.target.value < 0 && e.target.value.length !== 1) return;
             dispatch(setPopulationSize(+e.target.value));
+            reset();
           }}
           type="number"
         />
@@ -33,9 +37,10 @@ const MetricsConfig = () => {
           <Slider
             size="small"
             value={crossoverProbability}
-            onChange={(_, newValue) =>
-              dispatch(setCrossoverProbability(newValue as number))
-            }
+            onChange={(_, newValue) => {
+              dispatch(setCrossoverProbability(newValue as number));
+              reset();
+            }}
             min={0}
             max={1}
             step={0.01}
@@ -48,9 +53,10 @@ const MetricsConfig = () => {
           <Slider
             size="small"
             value={mutationProbability}
-            onChange={(_, newValue) =>
-              dispatch(setMutationProbability(newValue as number))
-            }
+            onChange={(_, newValue) => {
+              dispatch(setMutationProbability(newValue as number));
+              reset();
+            }}
             min={0}
             max={1}
             step={0.01}
