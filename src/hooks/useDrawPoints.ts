@@ -13,8 +13,15 @@ export default function useDrawPoints(
 ) {
   const points = useSelector(selectPoints);
   const route = useSelector(selectRoute);
-  const { WIDTH, HEIGHT, showNumbers, numbersSize, circleRadius } =
-    useSelector(selectBoard);
+  const {
+    WIDTH,
+    HEIGHT,
+    showNumbers,
+    numbersSize,
+    circleRadius,
+    edgeColor,
+    edgeThickness,
+  } = useSelector(selectBoard);
 
   useEffect(() => {
     let ctx;
@@ -64,5 +71,7 @@ export default function useDrawPoints(
     numbersSize,
     route,
     circleRadius,
+    edgeColor,
+    edgeThickness,
   ]);
 }

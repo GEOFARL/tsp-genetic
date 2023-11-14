@@ -75,17 +75,17 @@ const VertexGenerator = () => {
         }}
       >
         <Stack
-          direction={'row'}
+          direction={'column'}
           spacing={2}
           sx={{
             width: '224px',
             p: 1,
             pl: 2,
             pr: 3,
-            mt: 3,
+            mt: 1,
           }}
         >
-          <Typography>Number:</Typography>
+          <Typography>Number: {pointsToGenerate}</Typography>
           <Slider
             size="small"
             aria-label="Small"

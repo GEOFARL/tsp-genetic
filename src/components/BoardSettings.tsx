@@ -8,14 +8,18 @@ import {
   Typography,
 } from '@mui/material';
 import { MouseEvent, useState } from 'react';
+import { MuiColorInput } from 'mui-color-input';
 
 import SettingsIcon from '@mui/icons-material/Settings';
 import { Box, Stack } from '@mui/system';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../app/store';
 import {
+  resetToDefault,
   selectBoard,
   setCircleRadius,
+  setEdgeColor,
+  setEdgeThickness,
   setNumbersSize,
   toggleShowNumbers,
 } from '../app/slices/boardSlice';
@@ -23,7 +27,8 @@ import {
 const BoardSettings = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const dispatch = useDispatch<AppDispatch>();
-  const { showNumbers, numbersSize, circleRadius } = useSelector(selectBoard);
+  const { showNumbers, numbersSize, circleRadius, edgeColor, edgeThickness } =
+    useSelector(selectBoard);
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -61,6 +66,7 @@ const BoardSettings = () => {
           divider={<Divider orientation="vertical" flexItem />}
           spacing={0}
           width={250}
+          py={1}
         >
           <Box sx={{ padding: '5px 20px' }}>
             <FormControlLabel
@@ -125,6 +131,52 @@ const BoardSettings = () => {
               max={15}
             />
           </Stack>
+
+          <Divider sx={{ borderBottomWidth: 2 }} />
+
+          <Box sx={{ padding: '5px 20px' }}>
+            <Typography>Edge Color</Typography>
+            <MuiColorInput
+              value={edgeColor}
+              onChange={(newValue: string) => dispatch(setEdgeColor(newValue))}
+            ></MuiColorInput>
+          </Box>
+
+          <Divider sx={{ borderBottomWidth: 2 }} />
+
+          <Stack
+            direction={'column'}
+            spacing={2}
+            sx={{
+              padding: '5px 20px',
+            }}
+          >
+            <Typography>Edge thickness: {edgeThickness}px</Typography>
+            <Slider
+              size="small"
+              aria-label="Small"
+              valueLabelDisplay="auto"
+              value={edgeThickness}
+              onChange={(_, newValue) =>
+                dispatch(setEdgeThickness(newValue as number))
+              }
+              min={0.1}
+              max={5}
+              step={0.1}
+            />
+          </Stack>
+
+          <Divider sx={{ borderBottomWidth: 2 }} />
+
+          <Box
+            sx={{
+              padding: '5px 20px 0 20px',
+            }}
+          >
+            <Button fullWidth onClick={() => dispatch(resetToDefault())}>
+              Reset to Defaults
+            </Button>
+          </Box>
         </Stack>
       </Popover>
     </div>

@@ -8,14 +8,22 @@ export interface BoardSlice {
   showNumbers: boolean;
   numbersSize: number;
   circleRadius: number;
+  edgeColor: string;
+  edgeThickness: number;
 }
+
+const DEFAULT_SETTINGS = {
+  showNumbers: false,
+  numbersSize: 10,
+  circleRadius: 2,
+  edgeColor: '#ff0000',
+  edgeThickness: 1,
+};
 
 const initialState: BoardSlice = {
   HEIGHT: null,
   WIDTH: null,
-  showNumbers: false,
-  numbersSize: 10,
-  circleRadius: 2,
+  ...DEFAULT_SETTINGS,
 };
 
 export const boardSlice = createSlice({
@@ -35,11 +43,28 @@ export const boardSlice = createSlice({
     setCircleRadius: (state, action: PayloadAction<number>) => {
       state.circleRadius = action.payload;
     },
+    setEdgeColor: (state, action: PayloadAction<string>) => {
+      state.edgeColor = action.payload;
+    },
+    setEdgeThickness: (state, action: PayloadAction<number>) => {
+      state.edgeThickness = action.payload;
+    },
+    resetToDefault: (state) => {
+      // eslint-disable-next-line
+      return { ...state, ...DEFAULT_SETTINGS };
+    },
   },
 });
 
-export const { init, toggleShowNumbers, setNumbersSize, setCircleRadius } =
-  boardSlice.actions;
+export const {
+  init,
+  toggleShowNumbers,
+  setNumbersSize,
+  setCircleRadius,
+  setEdgeColor,
+  setEdgeThickness,
+  resetToDefault,
+} = boardSlice.actions;
 
 export const selectBoard = (state: RootState) => state.board;
 
