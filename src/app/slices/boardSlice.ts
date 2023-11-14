@@ -6,12 +6,16 @@ export interface BoardSlice {
   HEIGHT: number | null;
   WIDTH: number | null;
   showNumbers: boolean;
+  numbersSize: number;
+  circleRadius: number;
 }
 
 const initialState: BoardSlice = {
   HEIGHT: null,
   WIDTH: null,
   showNumbers: false,
+  numbersSize: 10,
+  circleRadius: 2,
 };
 
 export const boardSlice = createSlice({
@@ -25,10 +29,17 @@ export const boardSlice = createSlice({
     toggleShowNumbers: (state) => {
       state.showNumbers = !state.showNumbers;
     },
+    setNumbersSize: (state, action: PayloadAction<number>) => {
+      state.numbersSize = action.payload;
+    },
+    setCircleRadius: (state, action: PayloadAction<number>) => {
+      state.circleRadius = action.payload;
+    },
   },
 });
 
-export const { init, toggleShowNumbers } = boardSlice.actions;
+export const { init, toggleShowNumbers, setNumbersSize, setCircleRadius } =
+  boardSlice.actions;
 
 export const selectBoard = (state: RootState) => state.board;
 

@@ -9,7 +9,7 @@ export default function useDrawRoute(
   const route = useSelector(selectRoute);
   const points = useSelector(selectPoints);
 
-  const { showNumbers } = useSelector(selectBoard);
+  const { showNumbers, numbersSize, circleRadius } = useSelector(selectBoard);
 
   useEffect(() => {
     if (ref.current && route.length > 0) {
@@ -28,5 +28,5 @@ export default function useDrawRoute(
       ctx!.stroke();
       ctx!.closePath();
     }
-  }, [ref, route, points, showNumbers]);
+  }, [ref, route, points, numbersSize, showNumbers, circleRadius]);
 }
