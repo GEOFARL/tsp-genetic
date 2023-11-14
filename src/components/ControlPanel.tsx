@@ -4,21 +4,18 @@ import { Box, Stack } from '@mui/system';
 import DeleteIcon from '@mui/icons-material/Delete';
 import StopIcon from '@mui/icons-material/Stop';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import AddIcon from '@mui/icons-material/Add';
-import useGeneratePoints from '../hooks/useGeneratePoints';
 import useClearAll from '../hooks/useClearAll';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../app/store';
 import {
-  removeRoute,
   selectIntervalId,
   selectPoints,
   setIntervalId,
 } from '../app/slices/GASlice';
 import useStartAlgorithm from '../hooks/useStartAlgorithm';
+import VertexGenerator from './VertexGenerator';
 
 const ControlPanel = () => {
-  const generatePoints = useGeneratePoints();
   const clearAllPoints = useClearAll();
   const startAlgo = useStartAlgorithm();
 
@@ -43,7 +40,7 @@ const ControlPanel = () => {
       >
         Control Panel
       </Typography>
-      <Stack direction={'row'} spacing={2}>
+      <Stack direction={'row'} spacing={2} alignItems={'end'}>
         <Button
           variant="contained"
           onClick={() => {
@@ -63,16 +60,7 @@ const ControlPanel = () => {
         >
           Stop <StopIcon />
         </Button>
-        <Button
-          variant="contained"
-          onClick={() => {
-            dispatch(setIntervalId(null));
-            dispatch(removeRoute());
-            generatePoints(50);
-          }}
-        >
-          Generate vertices <AddIcon />
-        </Button>
+        <VertexGenerator />
         <Button
           variant="contained"
           color={'error'}

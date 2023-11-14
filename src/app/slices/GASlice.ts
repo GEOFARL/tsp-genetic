@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSelector, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { IPoint } from '../../types';
 import { RootState } from '../store';
@@ -7,6 +7,7 @@ export interface GASlice {
   points: IPoint[];
   route: number[];
   intervalId: number | null;
+  numberPointsToGenerate: number;
   config: {
     populationSize: number;
     crossoverProbability: number;
@@ -18,6 +19,7 @@ const initialState: GASlice = {
   points: [],
   route: [],
   intervalId: null,
+  numberPointsToGenerate: 50,
   config: {
     populationSize: 30,
     crossoverProbability: 0.9,
@@ -60,6 +62,9 @@ export const GASlice = createSlice({
       }
       state.intervalId = action.payload;
     },
+    setNumberOfPointsToGenerate: (state, action: PayloadAction<number>) => {
+      state.numberPointsToGenerate = action.payload;
+    },
   },
 });
 
@@ -73,11 +78,18 @@ export const {
   clearAll,
   removeRoute,
   setIntervalId,
+  setNumberOfPointsToGenerate,
 } = GASlice.actions;
 
 export const selectPoints = (state: RootState) => state.GA.points;
 export const selectConfig = (state: RootState) => state.GA.config;
 export const selectRoute = (state: RootState) => state.GA.route;
 export const selectIntervalId = (state: RootState) => state.GA.intervalId;
+export const selectNumberOfPointsToGenerate = (state: RootState) =>
+  state.GA.numberPointsToGenerate;
+export const selectTotalPointsGenerated = createSelector(
+  (state: RootState) => state.GA.points,
+  (points) => points.length
+);
 
 export default GASlice.reducer;
