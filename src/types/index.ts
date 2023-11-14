@@ -14,6 +14,7 @@ export enum Mutation {
 }
 
 export enum LocalImprovement {
+  TWO_OPT = 'two_opt',
   OFF = 'off',
 }
 
@@ -21,6 +22,7 @@ export interface GAConfig {
   populationSize: number;
   crossoverProbability: number;
   mutationProbability: number;
+  localImprovementProbability: number;
   crossover: Crossover;
   mutation: Mutation;
   localImprovement: LocalImprovement;

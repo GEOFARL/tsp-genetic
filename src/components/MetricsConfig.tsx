@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   selectConfig,
   setCrossoverProbability,
+  setLocalImprovementProbability,
   setMutationProbability,
   setPopulationSize,
 } from '../app/slices/GASlice';
@@ -11,8 +12,12 @@ import { Slider, TextField, Typography } from '@mui/material';
 import useReset from '../hooks/useReset';
 
 const MetricsConfig = () => {
-  const { crossoverProbability, mutationProbability, populationSize } =
-    useSelector(selectConfig);
+  const {
+    crossoverProbability,
+    mutationProbability,
+    localImprovementProbability,
+    populationSize,
+  } = useSelector(selectConfig);
   const dispatch = useDispatch<AppDispatch>();
 
   const reset = useReset();
@@ -55,6 +60,22 @@ const MetricsConfig = () => {
             value={mutationProbability}
             onChange={(_, newValue) => {
               dispatch(setMutationProbability(newValue as number));
+              reset();
+            }}
+            min={0}
+            max={1}
+            step={0.01}
+            aria-label="Small"
+            valueLabelDisplay="auto"
+          />
+        </Box>
+        <Box sx={{ pt: '5px' }}>
+          <Typography>Local Improvement Probability</Typography>
+          <Slider
+            size="small"
+            value={localImprovementProbability}
+            onChange={(_, newValue) => {
+              dispatch(setLocalImprovementProbability(newValue as number));
               reset();
             }}
             min={0}

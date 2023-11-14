@@ -1,6 +1,7 @@
 import { Typography } from '@mui/material';
 import { grey, teal } from '@mui/material/colors';
 import { Box } from '@mui/system';
+import MapIcon from '@mui/icons-material/Map';
 
 const Header = () => {
   return (
@@ -11,6 +12,7 @@ const Header = () => {
         py: {
           xs: '1rem',
         },
+        boxShadow: '0 0 10px rgba(0, 0, 0, .2)',
       }}
     >
       <Typography
@@ -22,7 +24,13 @@ const Header = () => {
           textAlign: 'center',
         }}
       >
-        Traveling Salesman Problem
+        Traveling Salesman Problem{' '}
+        <MapIcon
+          sx={{
+            width: '2.1rem',
+            height: '2.1rem',
+          }}
+        />
       </Typography>
     </Box>
   );

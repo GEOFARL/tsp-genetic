@@ -21,6 +21,7 @@ export default class GA {
 
   private readonly CROSSOVER_PROBABILITY: number;
   private readonly MUTATION_PROBABILITY: number;
+  private readonly LOCAL_IMPROVEMENT_PROBABILITY: number;
   private readonly POPULATION_SIZE: number;
 
   private generationCount = 0;
@@ -33,6 +34,7 @@ export default class GA {
       crossover,
       crossoverProbability,
       localImprovement,
+      localImprovementProbability,
       mutation,
       mutationProbability,
       populationSize,
@@ -45,6 +47,7 @@ export default class GA {
     this.POPULATION_SIZE = populationSize;
     this.CROSSOVER_PROBABILITY = crossoverProbability;
     this.MUTATION_PROBABILITY = mutationProbability;
+    this.LOCAL_IMPROVEMENT_PROBABILITY = localImprovementProbability;
 
     this.populationEvaluation = new Array(this.POPULATION_SIZE);
     this.roulette = new Array(this.POPULATION_SIZE);
@@ -52,12 +55,10 @@ export default class GA {
     this.computeDistances();
     this.generatePopulation();
     this.findBestPopulation();
-    console.log('Initialized', JSON.parse(JSON.stringify(this)));
   }
 
   public getRoute(): number[] {
     this.getNextGeneration();
-    console.log('New generation', JSON.parse(JSON.stringify(this)));
     return this.bestPopulation!.population!;
   }
 
@@ -209,6 +210,49 @@ export default class GA {
 
   private localImprovement() {
     if (this.LOCAL_IMPROVEMENT_TYPE === LocalImprovement.OFF) return;
+
+    switch (this.LOCAL_IMPROVEMENT_TYPE) {
+      case LocalImprovement.TWO_OPT: {
+        if (Math.random() > this.LOCAL_IMPROVEMENT_PROBABILITY) {
+          break;
+        }
+
+        const chromosome = this.population[0];
+        let bestChromosome = chromosome;
+        let value = this.evaluate(chromosome);
+
+        for (let i = 0; i < 150; i += 1) {
+          const randomNumber1 = getRandomNumber(0, this.points.length - 1);
+          const randomNumber2 = getRandomNumber(
+            randomNumber1,
+            this.points.length - 1
+          );
+
+          const newChromosome = this.twoOpt(
+            chromosome,
+            randomNumber1,
+            randomNumber2
+          );
+          const newValue = this.evaluate(newChromosome);
+
+          if (newValue < value) {
+            bestChromosome = newChromosome;
+            value = newValue;
+          }
+        }
+        this.population[0] = bestChromosome;
+        break;
+      }
+    }
+  }
+
+  private twoOpt(chromosome: number[], v1: number, v2: number): number[] {
+    const newChromosome = chromosome
+      .slice(0, v1)
+      .concat(chromosome.slice(v1, v2).reverse())
+      .concat(chromosome.slice(v2));
+
+    return newChromosome;
   }
 
   private computeDistances() {

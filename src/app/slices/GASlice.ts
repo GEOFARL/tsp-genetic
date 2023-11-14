@@ -13,6 +13,7 @@ export interface GASlice {
     populationSize: number;
     crossoverProbability: number;
     mutationProbability: number;
+    localImprovementProbability: number;
   };
   stats: {
     generationCount: number;
@@ -33,6 +34,7 @@ const initialState: GASlice = {
     populationSize: 30,
     crossoverProbability: 0.9,
     mutationProbability: 0.01,
+    localImprovementProbability: 0.2,
   },
   stats: {
     generationCount: 0,
@@ -59,6 +61,9 @@ export const GASlice = createSlice({
     },
     setMutationProbability: (state, action: PayloadAction<number>) => {
       state.config.mutationProbability = action.payload;
+    },
+    setLocalImprovementProbability: (state, action: PayloadAction<number>) => {
+      state.config.localImprovementProbability = action.payload;
     },
     setRoute: (state, action: PayloadAction<number[]>) => {
       state.route = action.payload;
@@ -114,6 +119,7 @@ export const {
   removePoints,
   setCrossoverProbability,
   setMutationProbability,
+  setLocalImprovementProbability,
   setPopulationSize,
   setRoute,
   clearAll,
