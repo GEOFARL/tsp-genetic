@@ -13,6 +13,9 @@ export interface GASlice {
     crossoverProbability: number;
     mutationProbability: number;
   };
+  stats: {
+    generationCount: number;
+  };
 }
 
 const initialState: GASlice = {
@@ -24,6 +27,9 @@ const initialState: GASlice = {
     populationSize: 30,
     crossoverProbability: 0.9,
     mutationProbability: 0.01,
+  },
+  stats: {
+    generationCount: 0,
   },
 };
 
@@ -65,6 +71,14 @@ export const GASlice = createSlice({
     setNumberOfPointsToGenerate: (state, action: PayloadAction<number>) => {
       state.numberPointsToGenerate = action.payload;
     },
+    setGenerationCount: (state, action: PayloadAction<number>) => {
+      state.stats.generationCount = action.payload;
+    },
+    clearAllStats: (state) => {
+      state.stats = {
+        generationCount: 0,
+      };
+    },
   },
 });
 
@@ -79,6 +93,8 @@ export const {
   removeRoute,
   setIntervalId,
   setNumberOfPointsToGenerate,
+  setGenerationCount,
+  clearAllStats,
 } = GASlice.actions;
 
 export const selectPoints = (state: RootState) => state.GA.points;
@@ -91,5 +107,7 @@ export const selectTotalPointsGenerated = createSelector(
   (state: RootState) => state.GA.points,
   (points) => points.length
 );
+export const selectGenerationCount = (state: RootState) =>
+  state.GA.stats.generationCount;
 
 export default GASlice.reducer;

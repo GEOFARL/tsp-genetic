@@ -312,4 +312,8 @@ export default class GA {
 
     return -1;
   }
+
+  public getGenerationCount() {
+    return this.generationCount;
+  }
 }

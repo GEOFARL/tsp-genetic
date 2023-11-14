@@ -10,6 +10,7 @@ export interface BoardSlice {
   circleRadius: number;
   edgeColor: string;
   edgeThickness: number;
+  updateRate: number;
 }
 
 const DEFAULT_SETTINGS = {
@@ -18,6 +19,7 @@ const DEFAULT_SETTINGS = {
   circleRadius: 2,
   edgeColor: '#ff0000',
   edgeThickness: 1,
+  updateRate: 10,
 };
 
 const initialState: BoardSlice = {
@@ -49,6 +51,9 @@ export const boardSlice = createSlice({
     setEdgeThickness: (state, action: PayloadAction<number>) => {
       state.edgeThickness = action.payload;
     },
+    setUpdateRate: (state, action: PayloadAction<number>) => {
+      state.updateRate = action.payload;
+    },
     resetToDefault: (state) => {
       // eslint-disable-next-line
       return { ...state, ...DEFAULT_SETTINGS };
@@ -63,9 +68,11 @@ export const {
   setCircleRadius,
   setEdgeColor,
   setEdgeThickness,
+  setUpdateRate,
   resetToDefault,
 } = boardSlice.actions;
 
 export const selectBoard = (state: RootState) => state.board;
+export const selectUpdateRate = (state: RootState) => state.board.updateRate;
 
 export default boardSlice.reducer;

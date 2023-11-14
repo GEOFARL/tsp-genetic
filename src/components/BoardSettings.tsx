@@ -21,14 +21,22 @@ import {
   setEdgeColor,
   setEdgeThickness,
   setNumbersSize,
+  setUpdateRate,
   toggleShowNumbers,
 } from '../app/slices/boardSlice';
+import { setIntervalId } from '../app/slices/GASlice';
 
 const BoardSettings = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const dispatch = useDispatch<AppDispatch>();
-  const { showNumbers, numbersSize, circleRadius, edgeColor, edgeThickness } =
-    useSelector(selectBoard);
+  const {
+    showNumbers,
+    numbersSize,
+    circleRadius,
+    edgeColor,
+    edgeThickness,
+    updateRate,
+  } = useSelector(selectBoard);
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -163,6 +171,30 @@ const BoardSettings = () => {
               min={0.1}
               max={5}
               step={0.1}
+            />
+          </Stack>
+
+          <Divider sx={{ borderBottomWidth: 2 }} />
+
+          <Stack
+            direction={'column'}
+            spacing={2}
+            sx={{
+              padding: '5px 20px',
+            }}
+          >
+            <Typography>Generation update rate: {updateRate}ms</Typography>
+            <Slider
+              size="small"
+              aria-label="Small"
+              valueLabelDisplay="auto"
+              value={updateRate}
+              onChange={(_, newValue) => {
+                dispatch(setIntervalId(null));
+                dispatch(setUpdateRate(newValue as number));
+              }}
+              min={5}
+              max={1000}
             />
           </Stack>
 
