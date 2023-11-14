@@ -316,4 +316,11 @@ export default class GA {
   public getGenerationCount() {
     return this.generationCount;
   }
+
+  public getTotalDistance() {
+    if (this.bestPopulation) {
+      return Math.round(this.bestPopulation.value * 100) / 100;
+    }
+    return 0;
+  }
 }

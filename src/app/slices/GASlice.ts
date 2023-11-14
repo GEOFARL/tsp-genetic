@@ -7,6 +7,7 @@ export interface GASlice {
   points: IPoint[];
   route: number[];
   intervalId: number | null;
+  isPaused: boolean;
   numberPointsToGenerate: number;
   config: {
     populationSize: number;
@@ -15,6 +16,7 @@ export interface GASlice {
   };
   stats: {
     generationCount: number;
+    totalDistance: number;
   };
 }
 
@@ -22,6 +24,7 @@ const initialState: GASlice = {
   points: [],
   route: [],
   intervalId: null,
+  isPaused: false,
   numberPointsToGenerate: 50,
   config: {
     populationSize: 30,
@@ -30,6 +33,7 @@ const initialState: GASlice = {
   },
   stats: {
     generationCount: 0,
+    totalDistance: 0,
   },
 };
 
@@ -74,10 +78,17 @@ export const GASlice = createSlice({
     setGenerationCount: (state, action: PayloadAction<number>) => {
       state.stats.generationCount = action.payload;
     },
+    setTotalDistance: (state, action: PayloadAction<number>) => {
+      state.stats.totalDistance = action.payload;
+    },
     clearAllStats: (state) => {
       state.stats = {
         generationCount: 0,
+        totalDistance: 0,
       };
+    },
+    setIsPaused: (state, action: PayloadAction<boolean>) => {
+      state.isPaused = action.payload;
     },
   },
 });
@@ -93,8 +104,10 @@ export const {
   removeRoute,
   setIntervalId,
   setNumberOfPointsToGenerate,
+  setTotalDistance,
   setGenerationCount,
   clearAllStats,
+  setIsPaused,
 } = GASlice.actions;
 
 export const selectPoints = (state: RootState) => state.GA.points;
@@ -109,5 +122,8 @@ export const selectTotalPointsGenerated = createSelector(
 );
 export const selectGenerationCount = (state: RootState) =>
   state.GA.stats.generationCount;
+export const selectTotalDistance = (state: RootState) =>
+  state.GA.stats.totalDistance;
+export const selectIsPaused = (state: RootState) => state.GA.isPaused;
 
 export default GASlice.reducer;

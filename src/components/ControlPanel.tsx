@@ -1,27 +1,35 @@
-import { Button, Typography } from '@mui/material';
+import { Button, Snackbar, Typography } from '@mui/material';
 import { Box, Stack } from '@mui/system';
+import MuiAlert from '@mui/material/Alert';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import StopIcon from '@mui/icons-material/Stop';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import PauseIcon from '@mui/icons-material/Pause';
+
 import useClearAll from '../hooks/useClearAll';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../app/store';
 import {
   selectIntervalId,
+  selectIsPaused,
   selectPoints,
   setIntervalId,
+  setIsPaused,
 } from '../app/slices/GASlice';
 import useStartAlgorithm from '../hooks/useStartAlgorithm';
 import VertexGenerator from './VertexGenerator';
+import { useState } from 'react';
 
 const ControlPanel = () => {
+  const [messageOpen, setMessageOpen] = useState(false);
   const clearAllPoints = useClearAll();
   const startAlgo = useStartAlgorithm();
 
   const dispatch = useDispatch<AppDispatch>();
   const points = useSelector(selectPoints);
   const intervalId = useSelector(selectIntervalId);
+  const isPaused = useSelector(selectIsPaused);
 
   return (
     <Box
@@ -41,24 +49,57 @@ const ControlPanel = () => {
         Control Panel
       </Typography>
       <Stack direction={'row'} spacing={2} alignItems={'end'}>
-        <Button
-          variant="contained"
-          onClick={() => {
-            if (points.length > 0 && !intervalId) {
-              startAlgo();
-            }
-          }}
+        {!intervalId ? (
+          <Button
+            variant="contained"
+            onClick={() => {
+              if (points.length > 0 && !intervalId) {
+                startAlgo();
+              } else if (points.length === 0) {
+                setMessageOpen(true);
+              }
+            }}
+          >
+            Start <PlayArrowIcon />
+          </Button>
+        ) : !isPaused ? (
+          <Button
+            variant="contained"
+            onClick={() => dispatch(setIsPaused(true))}
+          >
+            Pause <PlayArrowIcon />
+          </Button>
+        ) : (
+          <Button
+            variant="contained"
+            onClick={() => dispatch(setIsPaused(false))}
+          >
+            Resume <PauseIcon />
+          </Button>
+        )}
+        <Snackbar
+          open={messageOpen}
+          autoHideDuration={6000}
+          onClose={() => setMessageOpen(false)}
+          anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
         >
-          Start <PlayArrowIcon />
-        </Button>
+          <MuiAlert
+            onClose={() => setMessageOpen(false)}
+            severity="error"
+            sx={{ width: '100%' }}
+          >
+            Generate vertices firstly
+          </MuiAlert>
+        </Snackbar>
         <Button
           variant="outlined"
           color="error"
           onClick={() => {
             dispatch(setIntervalId(null));
+            dispatch(setIsPaused(false));
           }}
         >
-          Stop <StopIcon />
+          Reset <StopIcon />
         </Button>
         <VertexGenerator />
         <Button
@@ -67,6 +108,7 @@ const ControlPanel = () => {
           onClick={() => {
             dispatch(setIntervalId(null));
             clearAllPoints();
+            dispatch(setIsPaused(false));
           }}
         >
           Clear All <DeleteIcon sx={{ pb: '.15rem' }} />

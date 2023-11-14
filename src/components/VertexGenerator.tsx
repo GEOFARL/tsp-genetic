@@ -11,6 +11,7 @@ import {
   removeRoute,
   selectNumberOfPointsToGenerate,
   setIntervalId,
+  setIsPaused,
   setNumberOfPointsToGenerate,
 } from '../app/slices/GASlice';
 import { MouseEvent, useState } from 'react';
@@ -40,6 +41,7 @@ const VertexGenerator = () => {
         onClick={() => {
           dispatch(setIntervalId(null));
           dispatch(removeRoute());
+          dispatch(setIsPaused(false));
           generatePoints(pointsToGenerate);
         }}
         sx={{
