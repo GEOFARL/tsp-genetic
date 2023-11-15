@@ -14,6 +14,7 @@ declare global {
     next(idx: number): T;
     previous(idx: number): T;
     deleteByValue(value: T): void;
+    reject(array: number[]): number[];
   }
 }
 
@@ -35,6 +36,12 @@ Array.prototype.previous = function (idx: number) {
 Array.prototype.deleteByValue = function (value) {
   const pos = this.indexOf(value);
   this.splice(pos, 1);
+};
+
+Array.prototype.reject = function (array) {
+  return this.filter(function (ele) {
+    return array.indexOf(ele) < 0 ? ele : null;
+  });
 };
 
 export const swap = (x: number, y: number, arr: number[]) => {

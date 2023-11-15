@@ -6,6 +6,7 @@ export interface IPoint {
 export enum Crossover {
   HEURISTIC = 'heuristic',
   PARTIALLY_MAPPED = 'partially_mapped',
+  ORDERED = 'ordered',
   OFF = 'off',
 }
 
