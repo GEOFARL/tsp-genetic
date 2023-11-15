@@ -10,6 +10,7 @@ export enum Crossover {
 
 export enum Mutation {
   SWAP = 'swap',
+  DISPLACEMENT = 'displacement',
   OFF = 'off',
 }
 

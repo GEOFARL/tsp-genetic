@@ -184,6 +184,10 @@ export default class GA {
             this.population[i] = this.swapMutate(this.population[i]);
             break;
           }
+          case Mutation.DISPLACEMENT: {
+            this.population[i] = this.displacementMutate(this.population[i]);
+            break;
+          }
         }
       }
     }
@@ -206,6 +210,23 @@ export default class GA {
     }
 
     return chromosome;
+  }
+
+  private displacementMutate(chromosome: number[]): number[] {
+    this.mutationCount += 1;
+
+    let m;
+    let n;
+    do {
+      m = getRandomNumber(0, Math.floor(chromosome.length / 2));
+      n = getRandomNumber(0, chromosome.length - 1);
+    } while (m >= n);
+
+    const s1 = chromosome.slice(0, m);
+    const s2 = chromosome.slice(m, n);
+    const s3 = chromosome.slice(n);
+
+    return s2.concat(s1).concat(s3);
   }
 
   private localImprovement() {
