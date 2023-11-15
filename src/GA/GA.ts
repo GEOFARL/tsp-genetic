@@ -71,6 +71,7 @@ export default class GA {
     this.localImprovement();
 
     this.findBestPopulation();
+    // console.log(JSON.parse(JSON.stringify(this)));
   }
 
   private selection() {
@@ -105,7 +106,84 @@ export default class GA {
         }
         break;
       }
+      case Crossover.PARTIALLY_MAPPED: {
+        const array = [];
+        for (let i = 0; i < this.POPULATION_SIZE; i += 1) {
+          if (Math.random() < this.CROSSOVER_PROBABILITY) {
+            array.push(i);
+          }
+        }
+
+        shuffle(array);
+        for (let i = 0; i < array.length - 2; i += 2) {
+          const first = this.PMXCrossover(array[i], array[i + 1]);
+          const second = this.PMXCrossover(array[i + 1], array[i]);
+
+          this.population[array[i]] = first;
+          this.population[array[i + 1]] = second;
+        }
+        break;
+      }
     }
+  }
+
+  private PMXCrossover(
+    firstChromosomeIdx: number,
+    secondChromosomeIdx: number
+  ) {
+    const firstChromosome = this.population[firstChromosomeIdx];
+    const secondChromosome = this.population[secondChromosomeIdx];
+
+    let newChromosome1 = [];
+    // let newChromosome2 = [];
+
+    const rand1 = getRandomNumber(0, this.points.length - 2);
+    let rand2;
+    do {
+      rand2 = getRandomNumber(rand1, this.points.length - 1);
+    } while (rand2 === rand1);
+
+    const slice1 = firstChromosome.slice(rand1, rand2);
+    const slice2 = secondChromosome.slice(rand1, rand2);
+
+    for (let i = 0; i < rand1; i += 1) {
+      newChromosome1.push(this.findValue(firstChromosome[i], slice1, slice2));
+      // newChromosome2.push(this.findValue(secondChromosome[i], slice2, slice1));
+    }
+
+    newChromosome1 = [...newChromosome1, ...slice2];
+    // newChromosome2 = [...newChromosome2, ...slice1];
+
+    for (let i = rand2; i < this.points.length; i += 1) {
+      newChromosome1.push(this.findValue(firstChromosome[i], slice1, slice2));
+      // newChromosome2.push(this.findValue(secondChromosome[i], slice2, slice1));
+    }
+
+    // console.log(`Random1: ${rand1}, Random2: ${rand2}`);
+    // console.log('First Chromosome: ', firstChromosome.slice());
+    // console.log('Second Chromosome: ', secondChromosome.slice());
+    // console.log('New f1', newChromosome1.slice());
+    // console.log('New f2', newChromosome2.slice());
+    // this.population[firstChromosomeIdx] = newChromosome2;
+    // this.population[secondChromosomeIdx] = newChromosome1;
+    return newChromosome1;
+  }
+
+  private findValue(value: number, slice1: number[], slice2: number[]) {
+    // console.log('slice1', slice1.slice());
+    // console.log('slice2', slice2.slice());
+    // console.log('value', value);
+    let index = slice2.indexOf(value);
+    let newValue = value;
+
+    while (index !== -1) {
+      newValue = slice1[index];
+      index = slice2.indexOf(newValue);
+      // console.log('New index:', index);
+      // console.log('New value:', newValue);
+    }
+
+    return newValue;
   }
 
   private heuristicCrossover(
