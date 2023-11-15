@@ -2,10 +2,12 @@ import {
   Button,
   Divider,
   FormControl,
+  FormControlLabel,
   InputLabel,
   MenuItem,
   Popover,
   Select,
+  Switch,
 } from '@mui/material';
 import { MouseEvent, useState } from 'react';
 
@@ -16,6 +18,7 @@ import { AppDispatch } from '../app/store';
 import {
   selectParameters,
   setCrossover,
+  setIsAsymmetric,
   setLocalImprovement,
   setMutation,
 } from '../app/slices/algorithmParametersSlice';
@@ -26,7 +29,7 @@ import useReset from '../hooks/useReset';
 const AlgorithmSettings = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const dispatch = useDispatch<AppDispatch>();
-  const { crossover, localImprovement, mutation } =
+  const { crossover, localImprovement, mutation, isAsymmetric } =
     useSelector(selectParameters);
 
   const reset = useReset();
@@ -154,6 +157,26 @@ const AlgorithmSettings = () => {
 
           <Box sx={{ padding: '15px 20px' }}>
             <MetricsConfig />
+          </Box>
+
+          <Divider sx={{ borderBottomWidth: 2 }} />
+
+          <Box sx={{ padding: '10px 20px' }}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={isAsymmetric}
+                  onChange={() => dispatch(setIsAsymmetric(!isAsymmetric))}
+                />
+              }
+              label="Asymmetric"
+              labelPlacement="start"
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                ml: 0,
+              }}
+            />
           </Box>
         </Stack>
       </Popover>

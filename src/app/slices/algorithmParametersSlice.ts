@@ -7,12 +7,14 @@ export interface AlgorithmParameters {
   crossover: Crossover;
   mutation: Mutation;
   localImprovement: LocalImprovement;
+  isAsymmetric: boolean;
 }
 
 const initialState: AlgorithmParameters = {
   crossover: Crossover.HEURISTIC,
   mutation: Mutation.SWAP,
   localImprovement: LocalImprovement.OFF,
+  isAsymmetric: false,
 };
 
 export const algorithmParametersSlice = createSlice({
@@ -28,11 +30,18 @@ export const algorithmParametersSlice = createSlice({
     setLocalImprovement: (state, action: PayloadAction<LocalImprovement>) => {
       state.localImprovement = action.payload;
     },
+    setIsAsymmetric: (state, action: PayloadAction<boolean>) => {
+      state.isAsymmetric = action.payload;
+    },
   },
 });
 
-export const { setCrossover, setLocalImprovement, setMutation } =
-  algorithmParametersSlice.actions;
+export const {
+  setCrossover,
+  setLocalImprovement,
+  setMutation,
+  setIsAsymmetric,
+} = algorithmParametersSlice.actions;
 
 export const selectParameters = (state: RootState) => state.algorithmParameters;
 

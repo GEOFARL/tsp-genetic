@@ -15,6 +15,8 @@ export default class GA {
   private roulette: number[] = [];
   private bestPopulation: { value: number; population: number[] } | null = null;
 
+  private readonly IS_ASYMMETRIC: boolean;
+
   private readonly CROSSOVER_TYPE: Crossover;
   private readonly MUTATION_TYPE: Mutation;
   private readonly LOCAL_IMPROVEMENT_TYPE: LocalImprovement;
@@ -38,7 +40,10 @@ export default class GA {
       mutation,
       mutationProbability,
       populationSize,
+      isAsymmetric,
     } = config;
+
+    this.IS_ASYMMETRIC = isAsymmetric;
 
     this.CROSSOVER_TYPE = crossover;
     this.MUTATION_TYPE = mutation;
@@ -511,8 +516,19 @@ export default class GA {
     this.distances = new Array(this.points.length);
     for (let i = 0; i < this.points.length; i += 1) {
       this.distances[i] = new Array<number>(this.points.length);
-      for (let j = 0; j < this.points.length; j += 1) {
-        this.distances[i][j] = this.getDistance(this.points[i], this.points[j]);
+    }
+    for (let i = 0; i < this.points.length; i += 1) {
+      this.distances[i][i] = 0;
+      for (let j = i + 1; j < this.points.length; j += 1) {
+        const distance = this.getDistance(this.points[i], this.points[j]);
+        this.distances[i][j] = distance;
+        if (this.IS_ASYMMETRIC) {
+          const factor = 0.5;
+          this.distances[j][i] =
+            distance + getRandomNumber(-factor * distance, factor * distance);
+        } else {
+          this.distances[j][i] = distance;
+        }
       }
     }
   }

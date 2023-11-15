@@ -30,4 +30,5 @@ export interface GAConfig {
   crossover: Crossover;
   mutation: Mutation;
   localImprovement: LocalImprovement;
+  isAsymmetric: boolean;
 }
