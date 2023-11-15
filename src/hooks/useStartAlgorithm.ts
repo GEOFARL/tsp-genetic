@@ -60,7 +60,7 @@ export default function useStartAlgorithm() {
       }
     }, updateRate);
 
-    dispatch(setIntervalId(id));
+    dispatch(setIntervalId(id as unknown as number));
   };
 
   return startAlgo;
